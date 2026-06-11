@@ -64,7 +64,7 @@ export default function Orders() {
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-sm font-bold px-2 py-0.5 rounded text-white" style={{ backgroundColor: '#007600' }}>
-                    {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Confirmed'}
+                    {(order.order_status || order.status || 'pending').charAt(0).toUpperCase() + (order.order_status || order.status || 'pending').slice(1)}
                   </span>
                   <span className="text-sm text-gray-600">Arriving in 2–5 business days</span>
                 </div>

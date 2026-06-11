@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { ChevronRight, Heart } from 'lucide-react';
 import StarRating from '@/components/StarRating';
 import { useRouter } from 'next/navigation';
@@ -12,8 +13,8 @@ export default function ProductDetailClient({ id }) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+  const { toggleWishlist, isWishlisted } = useWishlist();
   const [quantity, setQuantity] = useState(1);
-  const [wishlist, setWishlist] = useState(false);
   const [adding, setAdding] = useState(false);
   const router = useRouter();
 
@@ -56,6 +57,8 @@ export default function ProductDetailClient({ id }) {
   const discount = product.original_price
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : null;
+
+  const isWished = isWishlisted(product.id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
@@ -185,11 +188,11 @@ export default function ProductDetailClient({ id }) {
           </button>
 
           <button
-            onClick={() => setWishlist(!wishlist)}
+            onClick={() => toggleWishlist(product.id)}
             className="mt-3 w-full flex items-center justify-center gap-1 text-sm py-1 rounded border border-gray-300 hover:bg-gray-50"
           >
-            <Heart className={`w-4 h-4 ${wishlist ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
-            {wishlist ? 'Saved to Wishlist' : 'Add to Wish List'}
+            <Heart className={`w-4 h-4 ${isWished ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+            {isWished ? 'Saved to Wishlist' : 'Add to Wish List'}
           </button>
         </div>
       </div>

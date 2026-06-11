@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
@@ -11,21 +11,37 @@ export default function Checkout() {
   const { cart, token, loadCart } = useCart();
   const { user } = useAuth();
   const [address, setAddress] = useState('123, MG Road, Bengaluru, Karnataka — 560001');
+  const [email, setEmail] = useState(user ? user.email : '');
   const [isPlacing, setIsPlacing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [localCart, setLocalCart] = useState(null); // snapshot for success screen
 
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(prev => prev || user.email);
+    }
+  }, [user]);
+
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (isPlacing || success) return;
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address for order updates.');
+      return;
+    }
+    if (!address.trim()) {
+      alert('Please enter a valid shipping address.');
+      return;
+    }
     setIsPlacing(true);
     try {
       // Snapshot cart before it clears
       const cartSnapshot = cart;
       const res = await axios.post(`${API_URL}/orders`, {
         shipping_address: address,
-        payment_method: 'card'
+        payment_method: 'card',
+        email: email
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       setOrderId(res.data?.order?.id || res.data?.order_id || ('ORD' + Date.now()));
@@ -75,19 +91,35 @@ export default function Checkout() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left */}
         <div className="lg:col-span-2 space-y-4">
-          {/* Address */}
+          {/* Address and Contact */}
           <div className="bg-white border border-gray-200 rounded p-4">
             <div className="flex items-center gap-2 mb-3">
               <span className="w-6 h-6 rounded-full bg-gray-800 text-white text-xs flex items-center justify-center font-bold">1</span>
-              <h3 className="font-bold text-gray-800 flex items-center gap-1"><MapPin className="w-4 h-4" /> Shipping Address</h3>
+              <h3 className="font-bold text-gray-800 flex items-center gap-1"><MapPin className="w-4 h-4" /> Shipping Address & Contact</h3>
             </div>
-            <textarea
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-              rows={3}
-              required
-              className="w-full border border-gray-300 rounded p-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
+            
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email for Order Updates</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                placeholder="Enter your email address"
+                className="w-full border border-gray-300 rounded p-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Shipping Address</label>
+              <textarea
+                value={address}
+                onChange={e => setAddress(e.target.value)}
+                rows={3}
+                required
+                className="w-full border border-gray-300 rounded p-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              />
+            </div>
             <p className="text-xs text-gray-500 mt-1">Delivering to: <span className="font-medium text-gray-700">{user ? `${user.first_name} ${user.last_name}` : 'Guest User (Sign in to add address)'}</span></p>
           </div>
 
