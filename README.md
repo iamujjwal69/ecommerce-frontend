@@ -3,8 +3,8 @@
 This is a high-fidelity e-commerce web application designed to replicate the Amazon India shopping experience. It features a full-stack architecture with a Next.js frontend, a Node.js/Express backend, and a PostgreSQL database.
 
 ## 🚀 Live Demo
-- **Frontend**: [https://e-commerce-seven-beta-41.vercel.app/](https://e-commerce-seven-beta-41.vercel.app/)
-- **Backend API**: [https://e-commerce-backend-production-ebd6.up.railway.app/](https://e-commerce-backend-production-ebd6.up.railway.app/)
+- **Frontend**: [https://ecommerce-frontend-e4ir.onrender.com/](https://ecommerce-frontend-e4ir.onrender.com/)
+- **Backend API**: [https://ecommerce-backend-42ur.onrender.com/](https://ecommerce-backend-42ur.onrender.com/)
 
  ## For Using all features like wishlistyou have to login :
  - **Passwoord**: username: ujjwal@example.com
